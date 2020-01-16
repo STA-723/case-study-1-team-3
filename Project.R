@@ -36,7 +36,7 @@ pcb1_ind = 2
 pcb2_ind = which(names(df_ss)=="pcb_203")
 boxplot(df_ss[,pcb1_ind:pcb2_ind])
 # remove individual pcb from df_ss and create 2 columns- sum, mean. 
-# Will run sensitivity analysis later
+# save PCBs in pcb_mat
 pcb_mat = df_ss[,pcb1_ind:pcb2_ind]
 df_ss = df_ss[,-c(pcb1_ind:pcb2_ind)]
 df_ss$pcb_mean = rowMeans(pcb_mat)
