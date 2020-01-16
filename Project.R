@@ -36,3 +36,5 @@ df_ss = subset(df_ss,select=-c(maternal_age))
 # pca on pcb
 
 
+# qr
+
