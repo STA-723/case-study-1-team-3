@@ -104,7 +104,7 @@ par(xpd=TRUE)
 legend("topright", inset=c(-0.15,0),
        legend=as.character(quants), title="Quantile",
        pch=16,col = c(2:nq))
-
+par(xpd=F)
 
 # plot coefs of important variables
 coefs = qr_model$coefficients
