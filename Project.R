@@ -151,12 +151,14 @@ qr_summ = summary(qr_model,se="rank")
 #   select(index)
 # data = qr_model$fitted.values[c(df_ss_ordered$index),]
 data = qr_model$fitted.values
-plot(log(df_ss$dde),data[,nq],col=2,ylim=range(data), bty='L',
+logx = log(df_ss$dde)
+plot(logx,data[,nq],col=2,ylim=range(data), bty='L',
      ylab="Age",
      main = "Fitted Values",
+     xlab ="DDE,log",
      pch=20,cex=.8)
 for ( j in (nq-1):(1)){
-  points(log(df_ss$dde),data[,j],col=j+1,
+  points(logx,data[,j],col=j+1,
          pch=20,cex=.8)
 }
 par(xpd=TRUE)

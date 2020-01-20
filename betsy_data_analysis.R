@@ -117,4 +117,4 @@ summary(lm_simple)
 lm_simple = lm(gestational_age~dde+triglycerides+cholesterol+pcb_sum+center-1,df_ss)
 summary(lm_simple)
 
-
+qr_model = rq(gestational_age~dde+pcb_sum+race_w+race_b+cholesterol+smoking_status,data=df_ss)
