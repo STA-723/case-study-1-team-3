@@ -1,5 +1,6 @@
 # import packages
 library(quantreg)
+library(tidyverse)
 
 # import data
 df = readRDS("Longnecker.rds")
@@ -24,7 +25,9 @@ sum(colSums(is.na(df_ss)))
 df_ss = df_ss[df_ss$gestational_age<50,]
 
 # bin maternal age into high risk, low risk
-df_ss$mat_age_risk = ifelse(df_ss$maternal_age>=35 | df_ss$maternal_age<=18,1,0)
+df_ss$mat_age_18un = ifelse(df_ss$maternal_age<=18,1,0)
+df_ss$mat_age_35up = ifelse(df_ss$maternal_age>=35,1,0)
+df_ss$mat_age_norisk = ifelse(df_ss$maternal_age<35 & df_ss$maternal_age>18,1,0)
 # drop maternal age
 df_ss = subset(df_ss,select=-c(maternal_age))
 
@@ -33,7 +36,50 @@ df_ss = subset(df_ss,select=-c(maternal_age))
 
 
 
-# pca on pcb
+# pca on pcb and score
+df_ss = na.omit(df_ss)
+
+
+
+#pca on pcbs
+pcb1_ind = 2
+pcb2_ind = which(names(df_ss)=="pcb_203")
+pc_pcb = prcomp(df_ss[,c(pcb1_ind:pcb2_ind)],scale=T)
+pc_pcb
+
+#shows %variance accounted for
+summary(pc_pcb)
+
+#skree plot for visualizaion
+library(factoextra)
+fviz_eig(pc_pcb)
+
+pcb_x = as.data.frame(pc_pcb$x)
+
+#select pcs to use
+library(MASS)
+pcb.lm = lm(df_ss$gestational_age~.,data=pcb_x)
+summary(pcb.lm)
+select.pcb = stepAIC(pcb.lm,direction="both")
+summary(select.pcb)
+
+#recommend 1,2,8 for reasons (could justify omitting any but 1 though)
+
+#pca for ses scores
+#!!!!!!!! change these indices
+pc_ses = prcomp(df_ss[,15:17])
+pc_ses
+summary(pc_ses)
+ses_x = as.data.frame(pc_ses$x)
+
+ses_lm = lm(df_ss$gestational_age~.,data=ses_x)
+
+summary(ses_lm)
+
+select.ses = stepAIC(ses_lm,direction="both")
+summary(select.ses)
+
+# recommend 1
 
 
 # qr
@@ -44,7 +90,13 @@ pcb1_ind = 2
 pcb2_ind = which(names(df_ss)=="pcb_203")
 # remove individual pcb from df_ss and create sum column
 df_ss = df_ss[,-c(pcb1_ind:pcb2_ind)]
-df_ss$pcb_sum = rowSums(pcb_mat)
+
+df_ss$pcb_pc1 = pcb_x[,1]
+df_ss$pcb_pc2 = pcb_x[,2]
+df_ss$pcb_pc8 = pcb_x[,8]
+
+# add pca for score variables
+df_ss$score = ses_x[,1]
 
 # reformat race and center
 # indicators for race
@@ -75,7 +127,7 @@ df_ss = subset(df_ss,select=-c(center))
 
 
 # drop variables we don't want as covariates
-df_ss = subset(df_ss,select=-c(score_income,score_education,ai_ind,center_1,race_w))
+df_ss = subset(df_ss,select=-c(score_income,score_education,score_occupation,ai_ind,center_1,race_w,mat_age_norisk))
 
 # explore identifiability
 des_mat = stats::model.matrix(gestational_age ~ ., data=df_ss)
@@ -88,22 +140,29 @@ summary(lm_model)
 
 # qr 
 quants = seq(from=.1,to=.9,by=.1)
+quants = c(.1,.25,.5,.75,.9)
 nq = length(quants)
 qr_model = rq(gestational_age ~ ., data=df_ss, tau=quants)
 qr_summ = summary(qr_model,se="rank")
 
 # plot fitted
+# df_ss_ordered = df_ss %>% mutate(index = 1:nrow(df_ss)) %>% 
+#   arrange(dde,pcb_pc1,pcb_pc2,pcb_pc8) %>% 
+#   select(index)
+# data = qr_model$fitted.values[c(df_ss_ordered$index),]
 data = qr_model$fitted.values
-plot(data[,1],col=2,ylim=range(data), bty='L',
+plot(log(df_ss$dde),data[,nq],col=2,ylim=range(data), bty='L',
      ylab="Age",
-     main = "Fitted Values")
-for ( j in 2:(nq)){
-  points(data[,j],col=j+1)
+     main = "Fitted Values",
+     pch=20,cex=.8)
+for ( j in (nq-1):(1)){
+  points(log(df_ss$dde),data[,j],col=j+1,
+         pch=20,cex=.8)
 }
 par(xpd=TRUE)
-legend("topright", inset=c(-0.15,0),
+legend("topright", inset=c(-0.5,0),
        legend=as.character(quants), title="Quantile",
-       pch=16,col = c(2:nq))
+       pch=16,col = c(nq:1))
 par(xpd=F)
 
 # plot coefs of important variables
@@ -125,17 +184,41 @@ lines(quants,cis_dde[2,],lty=2)
 abline(h=0,col="red")
 
 # pcb
-coefs_pcb = coefs[which(rownames(coefs) == "pcb_sum"),]
+coefs_pcb = coefs[which(rownames(coefs) == "pcb_pc1"),]
 cis_pcb = sapply(1:nq, 
-                 function(x) cis[[x]][which(rownames(coefs) == "pcb_sum"),])
+                 function(x) cis[[x]][which(rownames(coefs) == "pcb_pc1"),])
 plot(quants,coefs_pcb,
      type="b",lwd=1.5,lty=1,col="black",pch=16,
      xlab = "quantiles",ylab = expression(beta[pcb]),
-     main = "Coefficient of PCB",
+     main = "Coefficient of PCB, PC1",
      ylim = range(coefs_pcb,cis_pcb))
 lines(quants,cis_pcb[1,],lty=2)
 lines(quants,cis_pcb[2,],lty=2)
 abline(h=0,col="red")
 
+coefs_pcb = coefs[which(rownames(coefs) == "pcb_pc2"),]
+cis_pcb = sapply(1:nq, 
+                 function(x) cis[[x]][which(rownames(coefs) == "pcb_pc2"),])
+plot(quants,coefs_pcb,
+     type="b",lwd=1.5,lty=1,col="black",pch=16,
+     xlab = "quantiles",ylab = expression(beta[pcb]),
+     main = "Coefficient of PCB, PC2",
+     ylim = range(coefs_pcb,cis_pcb))
+lines(quants,cis_pcb[1,],lty=2)
+lines(quants,cis_pcb[2,],lty=2)
+abline(h=0,col="red")
 
+coefs_pcb = coefs[which(rownames(coefs) == "pcb_pc8"),]
+cis_pcb = sapply(1:nq, 
+                 function(x) cis[[x]][which(rownames(coefs) == "pcb_pc8"),])
+plot(quants,coefs_pcb,
+     type="b",lwd=1.5,lty=1,col="black",pch=16,
+     xlab = "quantiles",ylab = expression(beta[pcb]),
+     main = "Coefficient of PCB, PC8",
+     ylim = range(coefs_pcb,cis_pcb))
+lines(quants,cis_pcb[1,],lty=2)
+lines(quants,cis_pcb[2,],lty=2)
+abline(h=0,col="red")
+
+pc_pcb
 
