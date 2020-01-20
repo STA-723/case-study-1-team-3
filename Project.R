@@ -5,8 +5,6 @@ library(mice)
 
 # import data
 df = readRDS("Longnecker.rds")
-imp <- mice(df)
-df <- complete(imp)
 
 ## TIDY DATA
 
@@ -34,15 +32,12 @@ df_ss$mat_age_norisk = ifelse(df_ss$maternal_age<35 & df_ss$maternal_age>18,1,0)
 # drop maternal age
 df_ss = subset(df_ss,select=-c(maternal_age))
 
-
 # mice on score variables
-
+imp <- mice(df_ss)
+df_ss <- complete(imp)
 
 
 # pca on pcb and score
-df_ss = na.omit(df_ss)
-
-
 
 #pca on pcbs
 pcb1_ind = 2
@@ -69,7 +64,6 @@ summary(select.pcb)
 #recommend 1,2,8 for reasons (could justify omitting any but 1 though)
 
 #pca for ses scores
-#!!!!!!!! change these indices
 pc_ses = prcomp(df_ss[,15:17])
 pc_ses
 summary(pc_ses)
