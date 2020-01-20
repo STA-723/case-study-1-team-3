@@ -76,13 +76,18 @@ summary(select.ses)
 #recommend 1
 
 #boxcox transorm, in case we want to use
+plot(density(data2$gestational_age))
+x0 = seq(25,50,length=1000)
+lines(x0,dnorm(x0,mean(data2$gestational_age,sd(data2$gestational_age))),col='red')
+
 y <- data2$gestational_age
+#different results if using a different cutoff
+#y <- data2$gestational_age[data2$gestational_age < 45]
 
 miny <- min(y)
 maxy <- max(y)
 unity <- (y - miny) / (maxy-miny) + 1e-6
 
-library(MASS)
 bc = boxcox(unity~1)
 lambda <- bc$x[which.max(bc$y)]
 
@@ -99,5 +104,10 @@ boxy <- box_tran(unity,lambda)
 s <- sd(boxy)
 m <- mean(boxy)
 y <- (boxy - m) / s
+plot(density(y,adjust=1.5))
+x = seq(-4,5,length = 1000)
+#plot(density(y,adjust=2))
+#x = seq(-3,3,length=1000)
+lines(x,dnorm(x,0,1),col='red')
 
-
+#might be better to trim more aggressively than 50 weeks (44 and under perhaps)
