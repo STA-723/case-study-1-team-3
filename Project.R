@@ -1,9 +1,12 @@
 # import packages
 library(quantreg)
 library(tidyverse)
+library(mice)
 
 # import data
 df = readRDS("Longnecker.rds")
+imp <- mice(df)
+df <- complete(imp)
 
 ## TIDY DATA
 
