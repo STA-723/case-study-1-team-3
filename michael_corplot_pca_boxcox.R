@@ -40,6 +40,7 @@ cor(data2[,c(15:17)])
 
 #pca on pcbs
 pc_pcb = prcomp(data2[,c(2:12)],scale=T)
+pc_pcb
 
 #shows %variance accounted for
 summary(pc_pcb)
@@ -51,15 +52,17 @@ fviz_eig(pc_pcb)
 pcb_x = as.data.frame(pc_pcb$x)
 
 #select pcs to use
+library(MASS)
 pcb.lm = lm(data2$gestational_age~.,data=pcb_x)
 summary(pcb.lm)
 select.pcb = stepAIC(pcb.lm,direction="both")
 summary(select.pcb)
 
-#recommend 1,2,8 for reasons
+#recommend 1,2,8 for reasons (could justify omitting any but 1 though)
 
 #pca for ses scores
 pc_ses = prcomp(data2[,15:17])
+pc_ses
 summary(pc_ses)
 ses_x = as.data.frame(pc_ses$x)
 
