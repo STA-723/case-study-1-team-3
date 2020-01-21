@@ -148,21 +148,77 @@ qr_summ = summary(qr_model,se="rank")
 #   select(index)
 # data = qr_model$fitted.values[c(df_ss_ordered$index),]
 data = qr_model$fitted.values
+
+#dde
 logx = log(df_ss$dde)
-plot(logx,data[,nq],col=2,ylim=range(data), bty='L',
+plot(logx,data[,nq],col=nq+1,ylim=range(data), bty='L',
      ylab="Age",
      main = "Fitted Values",
-     xlab ="DDE,log",
+     xlab ="log(DDE)",
      pch=20,cex=.8)
 for ( j in (nq-1):(1)){
   points(logx,data[,j],col=j+1,
          pch=20,cex=.8)
 }
 par(xpd=TRUE)
-legend("topright", inset=c(-0.5,0),
-       legend=as.character(quants), title="Quantile",
-       pch=16,col = c(nq:1))
+legend("right", inset = c(-.2,0),
+       legend=as.character(rev(quants)), title="Quantile",
+       pch=16,col = (nq+1):2)
 par(xpd=F)
+
+#pcb_pc1
+logx = df_ss$pcb_pc1
+plot(logx,data[,nq],col=nq+1,ylim=range(data), bty='L',
+     ylab="Age",
+     main = "Fitted Values",
+     xlab ="PCB_PC1",
+     pch=20,cex=.8)
+for ( j in (nq-1):(1)){
+  points(logx,data[,j],col=j+1,
+         pch=20,cex=.8)
+}
+par(xpd=TRUE)
+legend("right", inset = c(-.2,0),
+       legend=as.character(rev(quants)), title="Quantile",
+       pch=16,col = (nq+1):2)
+par(xpd=F)
+
+#pcb_pc2
+logx = df_ss$pcb_pc2
+plot(logx,data[,nq],col=nq+1,ylim=range(data), bty='L',
+     ylab="Age",
+     main = "Fitted Values",
+     xlab ="PCB_PC2",
+     pch=20,cex=.8)
+for ( j in (nq-1):(1)){
+  points(logx,data[,j],col=j+1,
+         pch=20,cex=.8)
+}
+par(xpd=TRUE)
+legend("right", inset = c(-.2,0),
+       legend=as.character(rev(quants)), title="Quantile",
+       pch=16,col = (nq+1):2)
+par(xpd=F)
+
+#pcb_pc8
+logx = df_ss$pcb_pc8
+plot(logx,data[,nq],col=nq+1,ylim=range(data), bty='L',
+     ylab="Age",
+     main = "Fitted Values",
+     xlab ="PCB_PC8",
+     pch=20,cex=.8)
+for ( j in (nq-1):(1)){
+  points(logx,data[,j],col=j+1,
+         pch=20,cex=.8)
+}
+par(xpd=TRUE)
+legend("right", inset = c(-.2,0),
+       legend=as.character(rev(quants)), title="Quantile",
+       pch=16,col = (nq+1):2)
+par(xpd=F)
+
+
+
 
 # plot coefs of important variables
 coefs = qr_model$coefficients
@@ -177,7 +233,8 @@ plot(quants,coefs_dde,
      type="b",lwd=1.5,lty=1,col="black",pch=16,
      xlab = "quantiles",ylab = expression(beta[dde]),
      main = "Coefficient of DDE",
-     ylim = range(coefs_dde,cis_dde))
+     ylim = range(coefs_dde,cis_dde),xaxt='n')
+axis(1,at=quants)
 lines(quants,cis_dde[1,],lty=2)
 lines(quants,cis_dde[2,],lty=2)
 abline(h=0,col="red")
@@ -190,7 +247,8 @@ plot(quants,coefs_pcb,
      type="b",lwd=1.5,lty=1,col="black",pch=16,
      xlab = "quantiles",ylab = expression(beta[pcb]),
      main = "Coefficient of PCB, PC1",
-     ylim = range(coefs_pcb,cis_pcb))
+     ylim = range(coefs_pcb,cis_pcb),xaxt='n')
+axis(1,at=quants)
 lines(quants,cis_pcb[1,],lty=2)
 lines(quants,cis_pcb[2,],lty=2)
 abline(h=0,col="red")
@@ -202,7 +260,8 @@ plot(quants,coefs_pcb,
      type="b",lwd=1.5,lty=1,col="black",pch=16,
      xlab = "quantiles",ylab = expression(beta[pcb]),
      main = "Coefficient of PCB, PC2",
-     ylim = range(coefs_pcb,cis_pcb))
+     ylim = range(coefs_pcb,cis_pcb),xaxt='n')
+axis(1,at=quants)
 lines(quants,cis_pcb[1,],lty=2)
 lines(quants,cis_pcb[2,],lty=2)
 abline(h=0,col="red")
@@ -214,10 +273,12 @@ plot(quants,coefs_pcb,
      type="b",lwd=1.5,lty=1,col="black",pch=16,
      xlab = "quantiles",ylab = expression(beta[pcb]),
      main = "Coefficient of PCB, PC8",
-     ylim = range(coefs_pcb,cis_pcb))
+     ylim = range(coefs_pcb,cis_pcb),xaxt='n')
+axis(1,at=quants)
 lines(quants,cis_pcb[1,],lty=2)
 lines(quants,cis_pcb[2,],lty=2)
 abline(h=0,col="red")
 
+#pc_loadings
 pc_pcb
 
