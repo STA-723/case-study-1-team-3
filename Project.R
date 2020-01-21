@@ -142,6 +142,8 @@ nq = length(quants)
 qr_model = rq(gestational_age ~ ., data=df_ss, tau=quants)
 qr_summ = summary(qr_model,se="rank")
 
+
+par(mfrow = c(1,2))
 # plot fitted
 # df_ss_ordered = df_ss %>% mutate(index = 1:nrow(df_ss)) %>% 
 #   arrange(dde,pcb_pc1,pcb_pc2,pcb_pc8) %>% 
@@ -161,26 +163,26 @@ for ( j in (nq-1):(1)){
          pch=20,cex=.8)
 }
 par(xpd=TRUE)
-legend("right", inset = c(-.2,0),
+legend("topright", inset = c(-.2,0),
        legend=as.character(rev(quants)), title="Quantile",
-       pch=16,col = (nq+1):2)
+       pch=16,col = (nq+1):2, cex = 0.4)
 par(xpd=F)
 
 #pcb_pc1
-logx = df_ss$pcb_pc1
+logx = log(df_ss$pcb_pc1)
 plot(logx,data[,nq],col=nq+1,ylim=range(data), bty='L',
      ylab="Age",
      main = "Fitted Values",
-     xlab ="PCB_PC1",
+     xlab ="log(PCB_PC1)",
      pch=20,cex=.8)
 for ( j in (nq-1):(1)){
   points(logx,data[,j],col=j+1,
          pch=20,cex=.8)
 }
 par(xpd=TRUE)
-legend("right", inset = c(-.2,0),
+legend("topright", inset = c(-.2,0),
        legend=as.character(rev(quants)), title="Quantile",
-       pch=16,col = (nq+1):2)
+       pch=16,col = (nq+1):2, cex = 0.4)
 par(xpd=F)
 
 #pcb_pc2
@@ -195,9 +197,9 @@ for ( j in (nq-1):(1)){
          pch=20,cex=.8)
 }
 par(xpd=TRUE)
-legend("right", inset = c(-.2,0),
+legend("topright", inset = c(-.2,0),
        legend=as.character(rev(quants)), title="Quantile",
-       pch=16,col = (nq+1):2)
+       pch=16,col = (nq+1):2, cex = 0.2)
 par(xpd=F)
 
 #pcb_pc8
