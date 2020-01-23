@@ -30,10 +30,13 @@ qqnorm(lm.test$residuals)
 abline(0,1)
 
 #correlation of non-factor covariates (I like this plot a lot, illustrates pca value)
+png('cor_cs1.png',width = 800, height = 600)
+par(oma = c(3,4,0,0))
 library(fields)
 image.plot(x=1:21,y=1:21,z=cor(data2[,-c(14,22)]), yaxt = 'n',ylab='', xaxt = 'n',xlab='',main='Correlation Between Model Variables')
 axis(2,at=1:21,labels = names(data2[,-c(14,22)]),las=2)
 axis(1,at=1:21,labels = names(data2[,-c(14,22)]),las=2)
+dev.off()
 
 #ses correlations
 cor(data2[,c(15:17)])
@@ -41,6 +44,8 @@ cor(data2[,c(15:17)])
 #pca on pcbs
 pc_pcb = prcomp(data2[,c(2:12)],scale=T)
 pc_pcb
+library(xtable)
+print(xtable(pc_pcb$rotation[,c(1,2,8)]))
 
 #shows %variance accounted for
 summary(pc_pcb)

@@ -137,7 +137,7 @@ summary(lm_model)
 
 # qr 
 quants = seq(from=.1,to=.9,by=.1)
-quants = c(.1,.25,.5,.75,.9)
+#quants = c(.1,.25,.5,.75,.9)
 nq = length(quants)
 qr_model = rq(gestational_age ~ ., data=df_ss, tau=quants)
 qr_summ = summary(qr_model,se="rank")
@@ -229,6 +229,8 @@ cis = lapply(1:nq,
 coefs_dde = coefs[which(rownames(coefs) == "dde"),]
 cis_dde = sapply(1:nq, 
                  function(x) cis[[x]][which(rownames(coefs) == "dde"),])
+
+png('coef_dde_cs1.png',width=1000,height=600)
 plot(quants,coefs_dde,
      type="b",lwd=1.5,lty=1,col="black",pch=16,
      xlab = "quantiles",ylab = expression(beta[dde]),
@@ -238,11 +240,14 @@ axis(1,at=quants)
 lines(quants,cis_dde[1,],lty=2)
 lines(quants,cis_dde[2,],lty=2)
 abline(h=0,col="red")
+dev.off()
 
 # pcb
 coefs_pcb = coefs[which(rownames(coefs) == "pcb_pc1"),]
 cis_pcb = sapply(1:nq, 
                  function(x) cis[[x]][which(rownames(coefs) == "pcb_pc1"),])
+
+png('coef_pcb1_cs1.png',width=1000,height=600)
 plot(quants,coefs_pcb,
      type="b",lwd=1.5,lty=1,col="black",pch=16,
      xlab = "quantiles",ylab = expression(beta[pcb]),
@@ -252,10 +257,13 @@ axis(1,at=quants)
 lines(quants,cis_pcb[1,],lty=2)
 lines(quants,cis_pcb[2,],lty=2)
 abline(h=0,col="red")
+dev.off()
 
 coefs_pcb = coefs[which(rownames(coefs) == "pcb_pc2"),]
 cis_pcb = sapply(1:nq, 
                  function(x) cis[[x]][which(rownames(coefs) == "pcb_pc2"),])
+
+png('coef_pcb2_cs1.png',width=1000,height=600)
 plot(quants,coefs_pcb,
      type="b",lwd=1.5,lty=1,col="black",pch=16,
      xlab = "quantiles",ylab = expression(beta[pcb]),
@@ -265,10 +273,13 @@ axis(1,at=quants)
 lines(quants,cis_pcb[1,],lty=2)
 lines(quants,cis_pcb[2,],lty=2)
 abline(h=0,col="red")
+dev.off()
 
 coefs_pcb = coefs[which(rownames(coefs) == "pcb_pc8"),]
 cis_pcb = sapply(1:nq, 
                  function(x) cis[[x]][which(rownames(coefs) == "pcb_pc8"),])
+
+png('coef_pcb8_cs1.png',width=1000,height=600)
 plot(quants,coefs_pcb,
      type="b",lwd=1.5,lty=1,col="black",pch=16,
      xlab = "quantiles",ylab = expression(beta[pcb]),
@@ -278,6 +289,7 @@ axis(1,at=quants)
 lines(quants,cis_pcb[1,],lty=2)
 lines(quants,cis_pcb[2,],lty=2)
 abline(h=0,col="red")
+dev.off()
 
 #pc_loadings
 pc_pcb
