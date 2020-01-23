@@ -153,71 +153,79 @@ data = qr_model$fitted.values
 
 #dde
 logx = log(df_ss$dde)
-plot(logx,data[,nq],col=nq+1,ylim=range(data), bty='L',
+png('fitted_dde_cs1.png',width=600,height=400)
+plot(logx,data[,nq],col=2,ylim=range(data), bty='L',
      ylab="Age",
      main = "Fitted Values",
      xlab ="log(DDE)",
-     pch=20,cex=.8)
-for ( j in (nq-1):(1)){
-  points(logx,data[,j],col=j+1,
-         pch=20,cex=.8)
+     pch=20)
+for ( j in 2:3){
+  points(logx,data[,c(9,5,1)][,j],col=j+1,
+         pch=20)
 }
 par(xpd=TRUE)
-legend("topright", inset = c(-.2,0),
-       legend=as.character(rev(quants)), title="Quantile",
-       pch=16,col = (nq+1):2, cex = 0.4)
+legend("topright", inset = c(-.05,0),
+       legend=as.character(rev(quants[c(1,5,9)])), title="Quantile",
+       pch=16,col = 2:4)
 par(xpd=F)
+dev.off()
 
 #pcb_pc1
-logx = log(df_ss$pcb_pc1)
-plot(logx,data[,nq],col=nq+1,ylim=range(data), bty='L',
+logx = (df_ss$pcb_pc1)
+png('fitted_pcb1_cs1.png',width=600,height=400)
+plot(logx,data[,nq],col=2,ylim=range(data), bty='L',
      ylab="Age",
      main = "Fitted Values",
-     xlab ="log(PCB_PC1)",
-     pch=20,cex=.8)
-for ( j in (nq-1):(1)){
-  points(logx,data[,j],col=j+1,
-         pch=20,cex=.8)
+     xlab ="PCB_PC1",
+     pch=20)
+for ( j in 2:3){
+  points(logx,data[,c(9,5,1)][,j],col=j+1,
+         pch=20)
 }
 par(xpd=TRUE)
-legend("topright", inset = c(-.2,0),
-       legend=as.character(rev(quants)), title="Quantile",
-       pch=16,col = (nq+1):2, cex = 0.4)
+legend("topright", inset = c(-.05,0),
+       legend=as.character(rev(quants[c(1,5,9)])), title="Quantile",
+       pch=16,col = 2:4)
 par(xpd=F)
+dev.off()
 
 #pcb_pc2
 logx = df_ss$pcb_pc2
-plot(logx,data[,nq],col=nq+1,ylim=range(data), bty='L',
+png('fitted_pcb2_cs1.png',width=600,height=400)
+plot(logx,data[,nq],col=2,ylim=range(data), bty='L',
      ylab="Age",
      main = "Fitted Values",
      xlab ="PCB_PC2",
-     pch=20,cex=.8)
-for ( j in (nq-1):(1)){
-  points(logx,data[,j],col=j+1,
-         pch=20,cex=.8)
+     pch=20)
+for ( j in 2:3){
+  points(logx,data[,c(9,5,1)][,j],col=j+1,
+         pch=20)
 }
 par(xpd=TRUE)
-legend("topright", inset = c(-.2,0),
-       legend=as.character(rev(quants)), title="Quantile",
-       pch=16,col = (nq+1):2, cex = 0.2)
+legend("topright", inset = c(-.05,0),
+       legend=as.character(rev(quants[c(1,5,9)])), title="Quantile",
+       pch=16,col = 2:4)
 par(xpd=F)
+dev.off()
 
 #pcb_pc8
 logx = df_ss$pcb_pc8
-plot(logx,data[,nq],col=nq+1,ylim=range(data), bty='L',
+png('fitted_pcb8_cs1.png',width=600,height=400)
+plot(logx,data[,nq],col=2,ylim=range(data), bty='L',
      ylab="Age",
      main = "Fitted Values",
      xlab ="PCB_PC8",
-     pch=20,cex=.8)
-for ( j in (nq-1):(1)){
-  points(logx,data[,j],col=j+1,
-         pch=20,cex=.8)
+     pch=20)
+for ( j in 2:3){
+  points(logx,data[,c(9,5,1)][,j],col=j+1,
+         pch=20)
 }
 par(xpd=TRUE)
-legend("right", inset = c(-.2,0),
-       legend=as.character(rev(quants)), title="Quantile",
-       pch=16,col = (nq+1):2)
+legend("topright", inset = c(-.05,0),
+       legend=as.character(rev(quants[c(1,5,9)])), title="Quantile",
+       pch=16,col = 2:4)
 par(xpd=F)
+dev.off()
 
 
 
